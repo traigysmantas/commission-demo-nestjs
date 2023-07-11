@@ -6,6 +6,9 @@ import { CalculateCommissionDto } from './dto/calculate-commission.dto';
 import { CommissionRule } from './interfaces/commision-rule.interface';
 import { TransactionService } from '../transaction/transaction.service';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ClientDiscount } from './client-discount.entity';
 
 @Injectable()
 export class CommissionCalculationService {
@@ -13,8 +16,17 @@ export class CommissionCalculationService {
 
   private readonly rules: CommissionRule[];
 
-  constructor(transactionService: TransactionService, configService: ConfigService) {
-    this.rules = [new ClientDiscountRule(), new DefaultRule(configService), new HighTurnoverRule(transactionService)];
+  constructor(
+    @InjectRepository(ClientDiscount)
+    clientDiscountRepository: Repository<ClientDiscount>,
+    transactionService: TransactionService,
+    configService: ConfigService,
+  ) {
+    this.rules = [
+      new ClientDiscountRule(clientDiscountRepository),
+      new DefaultRule(configService),
+      new HighTurnoverRule(transactionService),
+    ];
   }
 
   async calculateCommission(transactionData: CalculateCommissionDto): Promise<number> {
