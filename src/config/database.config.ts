@@ -6,8 +6,7 @@ import { IsNumber, IsString, IsBoolean } from 'class-validator';
 import { isBooleanString, validate } from './validate';
 import { DATABASE_CONFIG } from './constants';
 import { ClientDiscount } from '../commission-calculation/client-discount.entity';
-import { CreateTables1689076003282 } from '../migrations/1689076003282-CreateTables';
-import { SeedDatabase1689086717670 } from '../migrations/1689086717670-SeedDatabase';
+import { CreateTables1689142284682 } from './migrations/1689142284682-CreateTables';
 
 class DatabaseConfiguration {
   @IsString()
@@ -36,10 +35,6 @@ class DatabaseConfiguration {
   @IsBoolean()
   @Transform(isBooleanString)
   DATABASE_DROP_SCHEMA: boolean;
-
-  @IsBoolean()
-  @Transform(isBooleanString)
-  DATABASE_SEED_ENABLED: boolean;
 }
 
 export default registerAs(DATABASE_CONFIG, () => {
@@ -55,7 +50,8 @@ export default registerAs(DATABASE_CONFIG, () => {
     entities: [Transaction, ClientDiscount],
     namingStrategy: new SnakeNamingStrategy(),
     migrationsRun: config.DATABASE_MIGRATION_RUN,
-    migrations: [CreateTables1689076003282, ...(config.DATABASE_SEED_ENABLED ? [SeedDatabase1689086717670] : [])],
+    // TODO: Investigate how to add multiple migrations.
+    migrations: [CreateTables1689142284682],
     synchronize: config.DATABASE_SYNCHRONIZE,
     dropSchema: config.DATABASE_DROP_SCHEMA,
   };

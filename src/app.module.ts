@@ -12,7 +12,7 @@ import { DATABASE_CONFIG } from './config/constants';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: `.env.${process.env.NODE_ENV}`, // relevant only to local development
       load: [databaseConfig, rulesConfig],
     }),
     LoggerModule,

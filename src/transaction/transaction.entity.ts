@@ -1,16 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity()
+@Index(['clientId', 'date'])
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   transactionId: string;
 
+  @Index()
   @Column()
   clientId: number;
 
-  @Column({
-    type: 'timestamp',
-  })
+  @Column({ type: 'timestamp' })
   date: Date;
 
   @Column({ type: 'double precision' })
@@ -33,14 +33,14 @@ export class Transaction {
 
   @CreateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
+    default: () => 'CURRENT_TIMESTAMP()',
   })
   public createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
+    default: () => 'CURRENT_TIMESTAMP()',
+    onUpdate: 'CURRENT_TIMESTAMP()',
   })
   public updatedAt: Date;
 }
